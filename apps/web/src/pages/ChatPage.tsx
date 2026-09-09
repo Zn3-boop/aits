@@ -61,7 +61,6 @@ type PersonaMemory = {
   updatedAt: string;
 };
 
-/* eslint-disable no-use-before-define */
 export const ChatPage = () => {
   const { logout } = useContext(AuthContext)!;
   const [personas, setPersonas] = useState<Persona[]>([]);
@@ -365,7 +364,6 @@ export const ChatPage = () => {
       }
     };
     loadPersonas();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [logout]);
 
   // Load sessions when persona changes
