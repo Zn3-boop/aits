@@ -89,7 +89,7 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'pnpm'
       
-      - run: pnpm install --frozen-lockfile\
+      - run: pnpm install --frozen-lockfile
       - run: pnpm turbo run build --filter=@lpm/server...
       - run: pnpm --filter @lpm/server lint
 
