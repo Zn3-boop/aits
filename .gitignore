@@ -32,3 +32,10 @@ tools/FunASR/
 dist/
 build/
 .next/
+
+# Prisma dev database
+apps/server/prisma/prisma/dev.db
+apps/server/prisma/dev.db
+apps/server/prisma/dev.db.backup
+*.db
+*.db.backup
