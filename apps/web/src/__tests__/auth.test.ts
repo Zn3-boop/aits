@@ -114,6 +114,10 @@ describe('Token 管理', () => {
 describe('HttpOnly Cookie 迁移场景（面试重点）', () => {
   const TOKEN_KEY = 'token';
   const USER_KEY = 'user';
+
+  beforeEach(() => {
+    localStorageMock.clear();
+  });
   
   /**
    * 面试常问：从 localStorage 迁移到 HttpOnly Cookie 的原因
