@@ -1,0 +1,315 @@
+.ai-providers-page {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  color: #3e2c23;
+}
+
+.ai-providers-page h1 {
+  margin: 0 0 8px;
+  font-size: 28px;
+  font-weight: 600;
+}
+
+.ai-providers-page > div > p {
+  margin: 0;
+  color: #8b7262;
+  font-size: 14px;
+}
+
+.ai-providers-page .error-message,
+.ai-providers-page .success-message {
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.ai-providers-page .error-message {
+  background: #fee;
+  border: 1px solid #fcc;
+  color: #c33;
+}
+
+.ai-providers-page .success-message {
+  background: #efe;
+  border: 1px solid #cfc;
+  color: #3c3;
+}
+
+.ai-providers-page .add-provider-btn {
+  padding: 10px 20px;
+  background: #3e2c23;
+  color: #f5ebe0;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 20px;
+  transition: background 0.2s;
+}
+
+.ai-providers-page .add-provider-btn:hover {
+  background: #5a3e2b;
+}
+
+.ai-providers-page .provider-form {
+  padding: 20px;
+  margin-bottom: 20px;
+  background: #fff;
+  border: 1px solid #d4bfae;
+  border-radius: 12px;
+}
+
+.ai-providers-page .provider-form h3 {
+  margin: 0 0 16px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.ai-providers-page .form-group {
+  margin-bottom: 16px;
+}
+
+.ai-providers-page .form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.ai-providers-page .form-group input,
+.ai-providers-page .form-group select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d4bfae;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.ai-providers-page .form-group input:focus,
+.ai-providers-page .form-group select:focus {
+  outline: none;
+  border-color: #c9956b;
+  box-shadow: 0 0 0 3px rgba(201, 149, 107, 0.15);
+}
+
+.ai-providers-page .form-group input::placeholder {
+  color: #b8a090;
+}
+
+.ai-providers-page .template-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.ai-providers-page .template-btn {
+  padding: 6px 12px;
+  background: #f5ebe0;
+  border: 1px solid #d4bfae;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s;
+}
+
+.ai-providers-page .template-btn:hover {
+  background: #efe1d1;
+  border-color: #c9956b;
+}
+
+.ai-providers-page .template-btn.active {
+  background: #c9956b;
+  color: #fff;
+  border-color: #c9956b;
+}
+
+.ai-providers-page .checkbox-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.ai-providers-page .checkbox-group input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #c9956b;
+}
+
+.ai-providers-page .form-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.ai-providers-page .form-actions button {
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.ai-providers-page .form-actions .submit-btn {
+  background: #3e2c23;
+  color: #f5ebe0;
+  border: none;
+}
+
+.ai-providers-page .form-actions .submit-btn:hover {
+  background: #5a3e2b;
+}
+
+.ai-providers-page .form-actions .cancel-btn {
+  background: #f5ebe0;
+  color: #3e2c23;
+  border: 1px solid #d4bfae;
+}
+
+.ai-providers-page .form-actions .cancel-btn:hover {
+  background: #efe1d1;
+}
+
+.ai-providers-page .providers-list {
+  display: grid;
+  gap: 12px;
+}
+
+.ai-providers-page .provider-card {
+  padding: 16px;
+  background: #fff;
+  border: 1px solid #d4bfae;
+  border-radius: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: box-shadow 0.2s;
+}
+
+.ai-providers-page .provider-card:hover {
+  box-shadow: 0 2px 8px rgba(62, 44, 35, 0.08);
+}
+
+.ai-providers-page .provider-card.default {
+  border: 2px solid #c9956b;
+}
+
+.ai-providers-page .provider-info h4 {
+  margin: 0 0 4px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.ai-providers-page .provider-info .badges {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.ai-providers-page .provider-info .badge {
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.ai-providers-page .provider-info .badge.default {
+  background: #c9956b;
+  color: #fff;
+}
+
+.ai-providers-page .provider-info .badge.type {
+  background: #f5ebe0;
+  color: #8b7262;
+}
+
+.ai-providers-page .provider-info .model-name {
+  font-size: 13px;
+  color: #8b7262;
+  margin-bottom: 4px;
+}
+
+.ai-providers-page .provider-info .base-url {
+  font-size: 12px;
+  color: #a08c7c;
+  word-break: break-all;
+}
+
+.ai-providers-page .provider-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.ai-providers-page .provider-actions button {
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s;
+}
+
+.ai-providers-page .provider-actions .set-default-btn {
+  background: #f5ebe0;
+  color: #3e2c23;
+  border: 1px solid #d4bfae;
+}
+
+.ai-providers-page .provider-actions .set-default-btn:hover {
+  background: #efe1d1;
+  border-color: #c9956b;
+}
+
+.ai-providers-page .provider-actions .edit-btn {
+  background: #f5ebe0;
+  color: #3e2c23;
+  border: 1px solid #d4bfae;
+}
+
+.ai-providers-page .provider-actions .edit-btn:hover {
+  background: #efe1d1;
+  border-color: #c9956b;
+}
+
+.ai-providers-page .provider-actions .delete-btn {
+  background: #fee;
+  color: #c33;
+  border: 1px solid #fcc;
+}
+
+.ai-providers-page .provider-actions .delete-btn:hover {
+  background: #fdd;
+  border-color: #faa;
+}
+
+.ai-providers-page .empty-state {
+  padding: 40px;
+  text-align: center;
+  background: #fff;
+  border: 1px solid #d4bfae;
+  border-radius: 12px;
+  color: #8b7262;
+}
+
+@media (max-width: 768px) {
+  .ai-providers-page {
+    padding: 16px;
+  }
+
+  .ai-providers-page .provider-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .ai-providers-page .provider-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}

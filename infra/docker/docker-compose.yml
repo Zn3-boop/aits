@@ -1,0 +1,92 @@
+version: '3.8'
+
+services:
+  # PostgreSQL 数据库
+  postgres:
+    image: postgres:16-alpine
+    container_name: lpm_postgres
+    environment:
+      POSTGRES_USER: lpm_user
+      POSTGRES_PASSWORD: lpm_password
+      POSTGRES_DB: lpm_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U lpm_user -d lpm_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis 缓存
+  redis:
+    image: redis:7-alpine
+    container_name: lpm_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # 后端服务
+  server:
+    build:
+      context: ../..
+      dockerfile: infra/docker/app/Dockerfile
+    container_name: lpm_server
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://lpm_user:lpm_password@postgres:5432/lpm_db
+      REDIS_URL: redis://redis:6379
+      PORT: 8787
+      HOST: 0.0.0.0
+      JWT_SECRET: ${JWT_SECRET}
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY}
+      MODEL_PROVIDER: ${MODEL_PROVIDER:-ollama}
+      MODEL_BASE_URL: ${MODEL_BASE_URL:-http://host.docker.internal:11434}
+      MODEL_NAME: ${MODEL_NAME:-qwen2.5:7b}
+    ports:
+      - "8787:8787"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ../../data:/app/data
+      - ../../apps/server/prisma:/app/prisma
+
+  # 前端服务 (可选，使用 Nginx)
+  # web:
+  #   build:
+  #     context: ../..
+  #     dockerfile: infra/docker/web/Dockerfile
+  #   container_name: lpm_web
+  #   ports:
+  #     - "3000:80"
+
+  # Ollama (可选，需要 GPU)
+  # ollama:
+  #   image: ollama/ollama:latest
+  #   container_name: lpm_ollama
+  #   ports:
+  #     - "11434:11434"
+  #   volumes:
+  #     - ollama_data:/root/.ollama
+  #   deploy:
+  #     resources:
+  #       reservations:
+  #         devices:
+  #           - driver: nvidia
+  #             count: all
+  #             capabilities: [gpu]
+
+volumes:
+  postgres_data:
+  redis_data:
+  # ollama_data:

@@ -1,0 +1,71 @@
+# 🚨🚨🚨 警告：核心文件 🚨🚨🚨
+
+## ❗ 请勿删除 ❗
+
+**本目录包含 `faster-whisper` 语音识别系统的所有相关文件**
+
+---
+
+## 📖 查看详细说明
+
+👉 请阅读： **`重要文件_请勿删除_faster-whisper说明.md`**
+
+---
+
+## ⚠️ 如果你考虑删除这些文件
+
+**在删除之前，请确认你知道以下后果：**
+
+1. ❌ 所有语音输入功能将失效
+2. ❌ 用户无法使用麦克风进行语音输入
+3. ❌ 需要重新配置替代的语音识别方案
+4. ❌ 可能影响项目的核心功能
+
+---
+
+## 📦 关键文件清单
+
+### 核心文件
+- `tools/faster-whisper-server.py` - 语音识别服务
+- `apps/server/scripts/stt-setup.py` - 安装配置脚本
+- `apps/web/src/hooks/useVoiceInput.ts` - 前端语音输入 Hook
+- `apps/server/src/routes/stt.ts` - 后端语音识别路由
+
+### 配置文件
+- `.venv/Lib/site-packages/faster_whisper/` - 库本身
+- `temp/faster-whisper-models/` - 语音模型存储
+
+---
+
+## 🔧 如果需要帮助
+
+**查阅文档**：`重要文件_请勿删除_faster-whisper说明.md`
+
+**快速启动**：
+```bash
+.\.venv\Scripts\Activate.ps1
+python tools\faster-whisper-server.py
+```
+
+---
+
+## 💡 最佳实践
+
+✅ **可以**：
+- 修改配置以优化性能
+- 升级到更新版本
+- 查看文档了解工作原理
+
+❌ **禁止**：
+- 直接删除文件或依赖
+- 假设可以轻松替换
+- 在不了解后果的情况下修改代码
+
+---
+
+**创建时间**：2026-08-24  
+**重要程度**：🔴 极高（核心功能依赖）
+
+---
+
+> ⚠️ 这是一个自动生成的警告文件，旨在保护项目的关键功能不被意外删除。

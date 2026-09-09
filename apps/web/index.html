@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="/live2d/sdk/live2dcubismcore.min.js"></script>
+    <script>
+      // Create an extensible PIXI placeholder on window BEFORE any ES modules load.
+      // pixi-live2d-display's UMD wrapper does: window.PIXI.live2d = factory(...)
+      // ES module namespace objects are NOT extensible, so we must use a plain object.
+      window.PIXI = window.PIXI || {};
+    </script>
+    <title>AI Companion</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

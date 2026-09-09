@@ -1,0 +1,34 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Large assets & models
+apps/web/public/live2d/
+apps/web/public/mediapipe/
+data/users/
+tools/FunASR/
+
+# Large archives
+*.tar.zst
+*-manifest.json
+
+# Binary/asset files
+*.wav
+*.task
+*.wasm
+*.zip
+*.psd
+*.can3
+*.cmo3
+*.moc3
+*.bin
+
+# Environment
+.env
+.env.local
+
+# Build
+dist/
+build/
+.next/

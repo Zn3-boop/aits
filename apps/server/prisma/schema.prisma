@@ -1,0 +1,230 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String                @id @default(cuid())
+  username      String                @unique
+  password      String
+  nickname      String
+  avatar        String?
+  role          String                @default("user")
+  status        String                @default("active")
+  createdAt     DateTime              @default(now())
+  updatedAt     DateTime              @updatedAt
+  aiProviders   AiProvider[]
+  auditLogs     AuditLog[]
+  fileAssets    FileAsset[]
+  live2dModels  Live2DModel[]
+  memories      Memory[]
+  personas      Persona[]
+  affections    PersonaAffection[]
+  conversations PersonaConversation[]
+  voiceProfiles VoiceProfile[]
+}
+
+model Persona {
+  id             String                @id @default(cuid())
+  userId         String
+  name           String                @default("")
+  subtitle       String                @default("")
+  aiModel        String                @default("default")
+  description    String                @default("")
+  speakingStyle  String                @default("")
+  systemPrompt   String                @default("")
+  modelKey       String                @default("default")
+  modelPath      String                @default("/live2d/models/kei_basic_free/runtime/kei_basic_free.model3.json")
+  avatar         String?
+  accent         String?
+  intro          String?
+  isSystem       Boolean               @default(false)
+  extensible     Boolean               @default(true)
+  skillsJson     Json                  @default("[\"MemoryRetriever\", \"EmotionAdapter\", \"Validator\", \"Decider\"]")
+  voiceId        String                @default("zh-CN-XiaoxiaoNeural")
+  live2dModelId  String                @default("kei_basic_free")
+  aiProviderId   String?
+  profileJson    Json
+  styleJson      Json
+  promptTemplate String                @default("")
+  encryptedBlob  String?
+  createdAt      DateTime              @default(now())
+  updatedAt      DateTime              @updatedAt
+  aiProvider     AiProvider?           @relation(fields: [aiProviderId], references: [id])
+  user           User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  affections     PersonaAffection[]
+  conversations  PersonaConversation[]
+  memories       PersonaMemory[]
+
+  @@index([userId])
+  @@index([userId, aiModel])
+  @@index([aiProviderId])
+}
+
+model AiProvider {
+  id        String    @id @default(cuid())
+  userId    String
+  name      String
+  type      String
+  baseUrl   String?
+  apiKey    String?
+  model     String
+  isDefault Boolean   @default(false)
+  isActive  Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  personas  Persona[]
+
+  @@index([userId])
+  @@index([type])
+  @@index([userId, isDefault])
+}
+
+model PersonaConversation {
+  id        String    @id @default(cuid())
+  personaId String
+  userId    String
+  sessionId String
+  role      String
+  content   String
+  emotion   String?
+  createdAt DateTime  @default(now())
+  deletedAt DateTime?
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  persona   Persona   @relation(fields: [personaId], references: [id], onDelete: Cascade)
+
+  @@index([personaId, sessionId])
+  @@index([userId])
+}
+
+model PersonaMemory {
+  id           String   @id @default(cuid())
+  personaId    String
+  userId       String
+  content      String
+  fingerprint  String
+  category     String   @default("general")
+  importance   Int      @default(5)
+  accessCount  Int      @default(0)
+  lastAccessed DateTime @default(now())
+  tags         Json
+  priority     Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  persona      Persona  @relation(fields: [personaId], references: [id], onDelete: Cascade)
+
+  @@index([personaId])
+  @@index([userId])
+  @@index([category])
+  @@index([importance])
+  @@index([fingerprint])
+  @@unique([personaId, userId, fingerprint])
+}
+
+model PersonaAffection {
+  id        String   @id @default(cuid())
+  personaId String
+  userId    String
+  level     Int      @default(0)
+  score     Int      @default(0)
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  persona   Persona  @relation(fields: [personaId], references: [id], onDelete: Cascade)
+
+  @@unique([personaId, userId])
+  @@index([userId])
+}
+
+model Memory {
+  id            String    @id @default(cuid())
+  userId        String
+  memoryType    String
+  contentJson   Json
+  tags          Json
+  priority      Int       @default(0)
+  encryptedBlob String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  deletedAt     DateTime?
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, memoryType])
+  @@index([userId, deletedAt])
+}
+
+model Live2DModel {
+  id        String   @id @default(cuid())
+  userId    String
+  code      String   @unique
+  name      String
+  path      String
+  isSystem  Boolean  @default(false)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([code])
+}
+
+model VoiceProfile {
+  id            String   @id @default(cuid())
+  userId        String
+  engineType    String
+  profilePath   String
+  sampleMeta    Json
+  encryptedBlob String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model FileAsset {
+  id              String   @id @default(cuid())
+  userId          String
+  assetType       String
+  filePath        String
+  fileHash        String
+  encryptedKeyRef String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, assetType])
+}
+
+model AuditLog {
+  id           String   @id @default(cuid())
+  userId       String?
+  action       String
+  targetType   String
+  targetId     String?
+  metadataJson Json
+  createdAt    DateTime @default(now())
+  user         User?    @relation(fields: [userId], references: [id])
+
+  @@index([userId, action])
+  @@index([targetType, targetId])
+}
+
+model ConversationSummary {
+  id           String   @id @default(cuid())
+  sessionId    String   @unique
+  personaId    String
+  userId       String
+  content      String
+  messageCount Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([sessionId])
+  @@index([userId])
+}

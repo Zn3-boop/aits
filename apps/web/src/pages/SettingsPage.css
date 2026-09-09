@@ -1,0 +1,258 @@
+
+.settings-page {
+  width: min(1120px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 32px 0;
+}
+.settings-page .hero-panel {
+  margin-bottom: 32px;
+}
+.settings-layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 24px;
+  align-items: start;
+}
+.settings-panel {
+  padding: 32px;
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  background: var(--bg-secondary);
+  backdrop-filter: blur(18px);
+}
+.settings-panel-header {
+  margin-bottom: 24px;
+}
+.settings-panel-header h3 {
+  margin: 8px 0 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+.settings-form {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+.settings-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.settings-section h4 {
+  margin: 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+.section-hint {
+  margin: -8px 0 4px;
+  font-size: 0.85rem;
+  color: var(--text-dim);
+}
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.form-group label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-label);
+}
+.form-group input,
+.form-group select {
+  min-height: 42px;
+  padding: 0 14px;
+  border: 1px solid var(--border-input);
+  border-radius: 12px;
+  background: var(--bg-input);
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  transition: border-color 180ms ease;
+}
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+.checkbox-group {
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  color: var(--text-secondary);
+}
+.checkbox-label input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent);
+}
+.form-actions {
+  display: flex;
+  gap: 12px;
+  padding-top: 8px;
+}
+.primary-button,
+.secondary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 0 20px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 180ms ease;
+}
+.primary-button {
+  color: #020617;
+  background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
+}
+.primary-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(103, 232, 249, 0.3);
+}
+.secondary-button {
+  color: var(--text-secondary);
+  border-color: var(--border-input);
+  background: var(--bg-input);
+}
+.secondary-button:hover {
+  border-color: var(--border-hover);
+}
+.settings-side-panel {
+  padding: 24px;
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  background: var(--bg-tertiary);
+  backdrop-filter: blur(18px);
+  position: sticky;
+  top: 24px;
+}
+.settings-side-panel h3 {
+  margin: 8px 0 20px;
+  font-size: 1.3rem;
+  color: var(--text-primary);
+}
+.settings-info {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+.info-item h4 {
+  margin: 0 0 6px;
+  font-size: 1rem;
+  color: var(--accent);
+}
+.info-item p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+.settings-status h4 {
+  margin: 0 0 12px;
+  font-size: 1rem;
+  color: var(--accent);
+}
+.settings-status ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.settings-status li {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  font-family: ui-monospace, monospace;
+  word-break: break-all;
+}
+.error-text {
+  color: var(--error);
+  font-size: 0.9rem;
+  margin: 8px 0 0;
+}
+.success-text {
+  color: var(--success);
+  font-size: 0.9rem;
+  margin: 8px 0 0;
+}
+@media (max-width: 900px) {
+  .settings-layout {
+    grid-template-columns: 1fr;
+  }
+  .settings-side-panel {
+    position: static;
+  }
+}
+
+/* ============================================================
+   LLM Settings Panel Styles
+   ============================================================ */
+
+.llm-settings-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+}
+
+.llm-settings-panel .form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.llm-settings-panel .form-field label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-label);
+}
+
+.llm-settings-panel .form-field input,
+.llm-settings-panel .form-field select {
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--border-input);
+  border-radius: 10px;
+  background: var(--bg-input-inner);
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  transition: border-color 180ms ease;
+}
+
+.llm-settings-panel .form-field input:focus,
+.llm-settings-panel .form-field select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.llm-settings-panel .primary-button {
+  margin-top: 8px;
+}
+
+.llm-settings-panel .toast {
+  margin-top: 8px;
+  padding: 10px 16px;
+  background: rgba(103, 232, 249, 0.15);
+  border: 1px solid rgba(103, 232, 249, 0.3);
+  border-radius: 10px;
+  color: var(--accent);
+  font-size: 0.9rem;
+  text-align: center;
+}

@@ -1,0 +1,146 @@
+
+.profile-page {
+  width: min(1120px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 32px 0;
+  color: #333;
+}
+
+.profile-page .hero-panel {
+  margin-bottom: 32px;
+}
+
+.profile-layout {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 24px;
+  align-items: start;
+}
+
+/* 主面板：米白色背景 */
+.profile-panel {
+  padding: 32px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 24px;
+  background: #faf8f5;
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 28px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+/* 头像：粉色渐变 */
+.profile-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f35d91, #d84d72);
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.profile-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 用户名 */
+.profile-header h3 {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #333;
+}
+
+.username {
+  margin: 4px 0 0;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.profile-form .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* 标签 */
+.profile-form label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #555;
+  text-align: left;
+}
+
+/* 输入框：米白色系 */
+.profile-form input {
+  min-height: 42px;
+  padding: 10px 14px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 12px;
+  background: #fff;
+  color: #333;
+  font-size: 0.95rem;
+  font-family: inherit;
+  transition: border-color 180ms ease, box-shadow 180ms ease;
+  width: 100%;
+}
+
+.profile-form input::placeholder {
+  color: #999;
+}
+
+.profile-form input:focus {
+  outline: none;
+  border-color: #f35d91;
+  box-shadow: 0 0 0 3px rgba(243, 93, 145, 0.1);
+}
+
+/* 侧边面板 */
+.profile-side-panel {
+  padding: 28px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 24px;
+  background: #faf8f5;
+}
+
+.profile-side-panel h3 {
+  margin: 0 0 20px;
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.success-text {
+  color: #10b981;
+  font-size: 0.9rem;
+  margin-top: 12px;
+}
+
+.error-text {
+  color: #ef4444;
+  font-size: 0.9rem;
+  margin-top: 12px;
+}
+
+@media (max-width: 900px) {
+  .profile-layout {
+    grid-template-columns: 1fr;
+  }
+}

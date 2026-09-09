@@ -1,0 +1,255 @@
+/* 聊天输入框样式 */
+.chat-input-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.chat-input-field {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 20px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.chat-input-field:focus {
+  border-color: #d89a73;
+  box-shadow: 0 0 0 3px rgba(216, 154, 115, 0.1);
+}
+
+.chat-input-field:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.chat-send-button {
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #d89a73, #c48a63);
+  color: white;
+  border: none;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.1s;
+  white-space: nowrap;
+}
+
+.chat-send-button:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.chat-send-button:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.chat-send-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 语音输入按钮 */
+.chat-voice-button {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(216, 154, 115, 0.2);\n  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chat-voice-button:hover:not(:disabled) {
+  background: rgba(216, 154, 115, 0.3);
+  transform: scale(1.05);
+}
+
+.chat-voice-button.listening {
+  background: rgba(239, 68, 68, 0.2);
+  animation: pulse 1.5s ease-in-out infinite;
+  position: relative;
+}
+
+.chat-voice-button.listening::before,
+.chat-voice-button.listening::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 2px solid rgba(239, 68, 68, 0.4);
+  animation: voiceRipple 1.5s ease-out infinite;
+}
+
+.chat-voice-button.listening::after {
+  inset: -8px;
+  animation-delay: 0.3s;
+}
+
+@keyframes voiceRipple {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+
+/* VAD语音按钮样式 */
+.chat-vad-button {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(34, 197, 94, 0.2);
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chat-vad-button:hover {
+  background: rgba(34, 197, 94, 0.3);
+  transform: scale(1.05);
+}
+
+.chat-vad-button.active {
+  background: rgba(34, 197, 94, 0.4);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* VAD状态显示 */
+.chat-vad-status {
+  font-size: 12px;
+  color: rgba(34, 197, 94, 0.8);
+  white-space: nowrap;
+  animation: fadeIn 0.2s ease-out;
+}
+
+/* 实时语音模式按钮 */
+.chat-mode-button {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(59, 130, 246, 0.2);
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chat-mode-button:hover {
+  background: rgba(59, 130, 246, 0.3);
+  transform: scale(1.05);
+}
+
+.chat-mode-button.active {
+  background: rgba(239, 68, 68, 0.3);
+}
+
+/* 实时状态显示 */
+.chat-realtime-status {
+  font-size: 12px;
+  color: rgba(59, 130, 246, 0.8);
+  white-space: nowrap;
+}
+
+/* 输入框包装器 */
+}
+
+/* 输入框包装器 */
+.chat-input-wrapper {
+  flex: 1;
+  position: relative;
+}
+
+/* 实时识别结果 */
+.chat-interim-transcript {
+  position: absolute;
+  bottom: 100%;
+  left: 14px;
+  margin-bottom: 4px;
+  padding: 4px 8px;
+  background: rgba(0, 0, 0, 0.6);
+  color: rgba(255, 255, 255, 0.9);
+  border-radius: 8px;
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 语音识别错误提示 */
+.chat-voice-error {
+  position: absolute;
+  bottom: 100%;
+  right: 0;
+  margin-bottom: 8px;
+  padding: 6px 12px;
+  background: rgba(239, 68, 68, 0.9);
+  color: white;
+  border-radius: 6px;
+  font-size: 12px;
+  white-space: nowrap;
+  animation: slideIn 0.2s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 输入框正在录音状态 */
+.chat-input-field.listening {
+  border-color: rgba(239, 68, 68, 0.5);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}

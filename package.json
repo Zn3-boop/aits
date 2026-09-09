@@ -1,0 +1,32 @@
+{
+  "name": "lpm-ai-companion-system",
+  "private": true,
+  "version": "0.1.0",
+  "packageManager": "pnpm@10.33.0",
+  "scripts": {
+    "dev": "pnpm --parallel --filter @lpm/web --filter @lpm/server dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "format": "turbo run format",
+    "clean": "pnpm -r --parallel exec rimraf dist node_modules/.cache",
+    "db:generate": "pnpm --filter @lpm/server prisma generate",
+    "db:migrate": "pnpm --filter @lpm/server prisma migrate dev",
+    "db:push": "pnpm --filter @lpm/server prisma db push",
+    "db:studio": "pnpm --filter @lpm/server prisma studio",
+    "db:seed": "pnpm --filter @lpm/server prisma db seed",
+    "typecheck": "pnpm -r exec tsc --noEmit"
+  },
+  "devDependencies": {
+    "@testing-library/react": "^16.3.2",
+    "@vitejs/plugin-react": "^6.0.2",
+    "jsdom": "^29.1.1",
+    "prettier": "^3.6.2",
+    "rimraf": "^6.0.1",
+    "turbo": "^2.5.8",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.8"
+  },
+  "dependencies": {
+    "jszip": "^3.10.1"
+  }
+}
