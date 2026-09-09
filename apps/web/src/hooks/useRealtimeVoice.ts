@@ -55,7 +55,7 @@ export function useRealtimeVoice(options: UseRealtimeVoiceOptions): RealtimeVoic
     
     console.log('[useRealtimeVoice] 重置倒计时:', autoSendDelay / 1000, '秒');
     
-    let remaining = Math.ceil(autoSendDelay / 1000);
+    const remaining = Math.ceil(autoSendDelay / 1000);
     setCountdown(remaining);
     
     timerRef.current = setTimeout(() => {

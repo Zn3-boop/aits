@@ -30,7 +30,7 @@ interface StreamEvent {
 // ========== 辅助函数 ==========
 
 // 句子分割（支持中英文标点）
-function splitSentences(text: string): string[] {
+function _splitSentences(text: string): string[] {
   const regex = /[^，。！？.!?\n]+[，。！？.!?\n]+/g;
   const matches = text.match(regex);
   return matches ? matches : [text];
@@ -73,7 +73,7 @@ export default async function chatStreamRoutes(app: FastifyInstance) {
   
   // 注意: /api/chat/stream 路由已在 chats.ts 中定义，此文件提供兼容路由
   app.post('/api/chat/stream-legacy', async (req, reply) => {
-    const { messages, personaId }: { 
+    const { messages, personaId: _personaId }: { 
       messages: ChatMessage[]; 
       personaId?: string 
     } = req.body as any;

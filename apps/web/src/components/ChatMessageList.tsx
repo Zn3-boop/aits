@@ -1,6 +1,6 @@
 import type { RefObject } from 'react';
 import { ttsManager } from '../services/tts/TTSManager';
-import { expressionBus } from '../features/expression-bus';
+
 
 type ChatMessage = {
   id: string;

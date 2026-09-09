@@ -123,11 +123,7 @@ export function useFaceExpression(videoRef: React.RefObject<HTMLVideoElement | n
       return Math.sqrt(dx * dx + dy * dy);
     };
 
-    const distNorm = (i: number, j: number) => {
-      // 归一化距离（相对于两眼距离）
-      const eyeDist = dist(L.LEFT_EYE_RIGHT, L.RIGHT_EYE_LEFT);
-      return dist(i, j) / Math.max(eyeDist, 0.001);
-    };
+
 
     // === 嘴巴分析 ===
     const mouthOpenH = dist(L.MOUTH_TOP, L.MOUTH_BOTTOM);
@@ -176,11 +172,11 @@ export function useFaceExpression(videoRef: React.RefObject<HTMLVideoElement | n
     const leftEyeCenterX = (landmarks[L.LEFT_EYE_LEFT].x + landmarks[L.LEFT_EYE_RIGHT].x) / 2;
     const rightEyeCenterX = (landmarks[L.RIGHT_EYE_LEFT].x + landmarks[L.RIGHT_EYE_RIGHT].x) / 2;
     const eyeCenterX = (leftEyeCenterX + rightEyeCenterX) / 2;
-    const eyeCenterY = (landmarks[L.LEFT_EYE_TOP].y + landmarks[L.RIGHT_EYE_TOP].y) / 2;
+    const _eyeCenterY = (landmarks[L.LEFT_EYE_TOP].y + landmarks[L.RIGHT_EYE_TOP].y) / 2;
     
     // 视线偏移（相对于面部中心）
     const gazeOffsetX = Math.abs(noseX - eyeCenterX);
-    const gazeOffsetY = Math.abs(landmarks[L.NOSE_TIP].y - eyeCenterY);
+
     
     eyeFocusHistory.current.push(gazeOffsetX);
     if (eyeFocusHistory.current.length > 10) eyeFocusHistory.current.shift();

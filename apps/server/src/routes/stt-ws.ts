@@ -53,7 +53,7 @@ const cleanupExpiredSessions = () => {
       if (session.checkInterval) clearInterval(session.checkInterval);
       try {
         session.ws.close();
-      } catch {}
+      } catch (_e) {}
       sessions.delete(id);
     }
   }

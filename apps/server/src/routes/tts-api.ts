@@ -6,7 +6,7 @@ import { spawn } from 'child_process';
 import { tmpdir } from 'os';
 import { join } from 'path';
 import { randomUUID } from 'crypto';
-import { writeFile, readFile, unlink } from 'fs/promises';
+import { readFile, unlink } from 'fs/promises';
 
 // Edge TTS 配置
 const EDGE_TTS_VOICE = process.env.EDGE_TTS_VOICE || 'zh-CN-XiaoxiaoNeural';
@@ -98,7 +98,7 @@ export default async function ttsApiRoutes(app: FastifyInstance) {
         .header('X-Word-Boundaries', JSON.stringify(wordBoundaries))
         .send(audioBuffer);
     } catch (err) {
-      app.log.error('[TTS/stream] 合成失败:', err);
+      app.log.error({ err }, '[TTS/stream] 合成失败:');
       const errorMessage = err instanceof Error ? err.message : '未知错误';
       return reply.status(500).send({
         error: 'TTS 合成失败',
@@ -135,7 +135,7 @@ export default async function ttsApiRoutes(app: FastifyInstance) {
         .header('Content-Disposition', 'inline')
         .send(audioBuffer);
     } catch (err) {
-      app.log.error('[TTS/synthesize] 合成失败:', err);
+      app.log.error({ err }, '[TTS/synthesize] 合成失败:');
       const errorMessage = err instanceof Error ? err.message : '未知错误';
       return reply.status(500).send({
         error: 'TTS 合成失败',
@@ -173,7 +173,7 @@ export default async function ttsApiRoutes(app: FastifyInstance) {
         .header('Content-Disposition', 'inline')
         .send(audioBuffer);
     } catch (error) {
-      app.log.error('[TTS/legacy] 合成失败:', error);
+      app.log.error({ error }, '[TTS/legacy] 合成失败:');
       await unlink(outputFile).catch(() => {});
       return reply.status(500).send({
         error: 'TTS 合成失败',

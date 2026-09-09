@@ -11,7 +11,7 @@ export class OpenAIProvider implements LlmProvider {
     this.modelName = modelName;
   }
 
-  async chat(messages: LlmMessage[], systemPrompt: string): Promise<LlmResponse> {
+  async chat(_messages: LlmMessage[], _systemPrompt: string): Promise<LlmResponse> {
     throw new Error('OpenAI Provider 尚未实现，请使用 Ollama Provider');
   }
 

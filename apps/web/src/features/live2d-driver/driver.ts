@@ -45,7 +45,8 @@ try {
     baseTexture.defaultOptions.mipmap = PIXI.MIPMAP_MODES.OFF;
     baseTexture.defaultOptions.scaleMode = PIXI.SCALE_MODES.LINEAR;
   }
-} catch {
+} catch (_e) {
+  // ignore PIXI init error
 }
 
 // ========== 全局 Live2D 声音静音补丁 ==========

@@ -19,7 +19,7 @@ export interface Chat {
   messages?: ChatMessage[];
 }
 
-const mapConversationToChat = (
+const _mapConversationToChat = (
   conversation: {
     id: string;
     userId: string;

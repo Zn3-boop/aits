@@ -79,7 +79,7 @@ app.get('/health', async (_req, res) => {
 
 app.get('/api/personas', async (_req, res) => {
   res.json(
-    personas.map(({ systemPrompt, ...persona }) => ({
+    personas.map(({ systemPrompt: _systemPrompt, ...persona }) => ({
       ...persona
     }))
   );

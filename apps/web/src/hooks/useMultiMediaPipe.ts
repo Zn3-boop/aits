@@ -35,7 +35,7 @@ interface UseMultiMediaPipeOptions {
   onData?: (data: MultiMediaPipeData) => void;
 }
 
-const BLENDSHAPE_TO_EMOTION: Record<string, { emotion: UserEmotion; weight: number }> = {
+const _BLENDSHAPE_TO_EMOTION: Record<string, { emotion: UserEmotion; weight: number }> = {
   'mouthSmileLeft': { emotion: 'happy', weight: 0.7 },
   'mouthSmileRight': { emotion: 'happy', weight: 0.7 },
   'mouthFrownLeft': { emotion: 'sad', weight: 0.8 },
@@ -152,7 +152,7 @@ function classifyFromBlendshapes(blendshapes: Record<string, number>, headPitch:
   
   const eyeLookDownL = blendshapes['eyeLookDownLeft'] || 0;
   const eyeLookDownR = blendshapes['eyeLookDownRight'] || 0;
-  const avgEyeLookDown = (eyeLookDownL + eyeLookDownR) / 2;
+  const _avgEyeLookDown = (eyeLookDownL + eyeLookDownR) / 2;
 
   // 计算相对于校准值的偏差
   const smileDelta = calibrationData.isCalibrated ? avgSmile - calibrationData.baselineSmile : avgSmile;
@@ -331,7 +331,7 @@ export function useMultiMediaPipe(options: UseMultiMediaPipeOptions = {}) {
   const lastTimestampRef = useRef<number>(-1);
   const emotionHistoryRef = useRef<Array<{ emotion: UserEmotion; confidence: number; time: number }>>([]);
   const smoothedEmotionRef = useRef<UserEmotion>('neutral');
-  const smoothedConfidenceRef = useRef<number>(0);
+  const _smoothedConfidenceRef = useRef<number>(0);
   // 使用 ref 存储 processFrame 以避免递归调用时的引用问题
   const processFrameRef = useRef<(() => void) | null>(null);
 
@@ -494,8 +494,8 @@ export function useMultiMediaPipe(options: UseMultiMediaPipeOptions = {}) {
       const leftEyeOuter = landmarks[33];
       const rightEyeOuter = landmarks[263];
       const faceWidth = Math.abs(leftEar.x - rightEar.x);
-      const headYaw = faceWidth > 0.001 ? (nose.x - (leftEar.x + rightEar.x) / 2) / faceWidth : 0;
-      const headRoll = Math.atan2(leftEyeOuter.y - rightEyeOuter.y, leftEyeOuter.x - rightEyeOuter.x);
+      const _headYaw = faceWidth > 0.001 ? (nose.x - (leftEar.x + rightEar.x) / 2) / faceWidth : 0;
+      const _headRoll = Math.atan2(leftEyeOuter.y - rightEyeOuter.y, leftEyeOuter.x - rightEyeOuter.x);
       
       // 调试：每 120 帧输出一次 result 的所有属性
       const debugFrameRef = (window as unknown as { __debugFrameCount?: number }).__debugFrameCount ?? 0;
@@ -550,7 +550,7 @@ export function useMultiMediaPipe(options: UseMultiMediaPipeOptions = {}) {
             browRaise,
             browFurrow,
             eyeDirection: { x: eyeDirX, y: eyeDirY },
-            body: { rightHandRaise: 0, leftHandRaise: 0, headPitch, bodyLean: 0, detected: false },
+            body: { rightHandRaise: 0, leftHandRaise: 0, headPitch, headYaw: _headYaw, headRoll: _headRoll, bodyLean: 0, detected: false },
             emotion: mappedEmotion,
             emotionConfidence: builtInEmotionScore,
             faceDetected: true,
@@ -614,7 +614,7 @@ export function useMultiMediaPipe(options: UseMultiMediaPipeOptions = {}) {
         browRaise,
         browFurrow,
         eyeDirection: { x: eyeDirX, y: eyeDirY },
-        body: { rightHandRaise: 0, leftHandRaise: 0, headPitch, bodyLean: 0, detected: false },
+        body: { rightHandRaise: 0, leftHandRaise: 0, headPitch, headYaw: _headYaw, headRoll: _headRoll, bodyLean: 0, detected: false },
         emotion: smoothedEmotion,
         emotionConfidence: smoothedConfidence,
         faceDetected: true,

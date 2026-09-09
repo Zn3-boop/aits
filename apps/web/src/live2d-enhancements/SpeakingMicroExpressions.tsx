@@ -284,7 +284,7 @@ export class SpeakingMicroExpressions {
 
   // ===== 眨眼 =====
 
-  private updateBlink(dt: number, now: number, activity: number): void {
+  private updateBlink(dt: number, now: number, _activity: number): void {
     if (this.isBlinking) {
       // 眨眼动画：0 → 1 → 0
       const blinkSpeed = 2 / (this.blinkDuration / dt);

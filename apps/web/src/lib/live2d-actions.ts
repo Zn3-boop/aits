@@ -9,7 +9,7 @@
  * 3. Maya ↔ Web 双向参数同步
  */
 
-import type { EmotionType } from '../services/expression-bus';
+import type { EmotionType as _EmotionType } from '../services/expression-bus';
 
 // ========== 核心类型定义 ==========
 

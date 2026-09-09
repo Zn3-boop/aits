@@ -100,7 +100,7 @@ export async function memoryRoutes(app: FastifyInstance) {
   });
 
   // 前端兼容路由：ChatPage.tsx 调用的是 /api/persona-memories/:personaId
-  app.get('/api/persona-memories/:personaId', { preHandler: requireAuth }, async (request, reply) => {
+  app.get('/api/persona-memories/:personaId', { preHandler: requireAuth }, async (request, _reply) => {
     const { personaId } = request.params as { personaId: string }
     const userId = request.user!.userId
 

@@ -84,7 +84,7 @@ async function* streamLLM(messages: Array<{role: string, content: string}>, syst
           if (content) {
             yield content;
           }
-        } catch (e) {
+        } catch (_e) {
           // 忽略解析错误
         }
       }
@@ -99,7 +99,7 @@ const VOICE_SYSTEM_PROMPT = `你是用户的 AI 伙伴。回复时用 [emotion:�
 例如: [emotion:surprised] 真的吗？`;
 
 export default async function voiceWSRoutes(app: FastifyInstance) {
-  app.get('/api/voice/ws', { websocket: true }, (socket, req) => {
+  app.get('/api/voice/ws', { websocket: true }, (socket, _req) => {
     logger.info('[VoiceWS] 新的语音连接');
 
     // 对话上下文

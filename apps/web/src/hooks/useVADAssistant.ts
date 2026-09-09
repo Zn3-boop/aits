@@ -383,6 +383,13 @@ export function useVADAssistant(cb: VADCallbacks, config: VADConfig = {}) {
             }
           } else if (d.type === 'interim' && d.text) {
             onTranscript.current?.(d.text);
+          } else if (d.type === 'error') {
+            logger.error('[VAD] STT错误:', d.message || d.error || '未知');
+            onError.current?.(d.message || d.error || 'STT识别失败');
+            if (continuousMode.current && !stoppingRef.current) {
+              logger.log('[VAD] 连续模式：STT错误，重新开始监听');
+              setTimeout(() => restartListeningRef.current(), 1000);
+            }
           }
         } catch { /* ignore */ }
       };
@@ -395,7 +402,7 @@ export function useVADAssistant(cb: VADCallbacks, config: VADConfig = {}) {
         setIsProcessing(false);
         ws.current = null;
 
-        if (!ev.wasClean && reconnectCountRef.current < 3 && continuousMode.current) {
+        if (!ev.wasClean && reconnectCountRef.current < 3 && continuousMode.current && !stoppingRef.current) {
           reconnectCountRef.current++;
           const delay = Math.min(1000 * Math.pow(2, reconnectCountRef.current - 1), 5000);
           logger.log('[VAD] 将在', delay, 'ms后重连 (第', reconnectCountRef.current, '次)');
@@ -455,6 +462,8 @@ export function useVADAssistant(cb: VADCallbacks, config: VADConfig = {}) {
     noiseSampleCount.current = 0;
     adaptiveThreshold.current = THRESHOLD;
     setError(null);
+    if (reconnectTimerRef.current) { clearTimeout(reconnectTimerRef.current); reconnectTimerRef.current = null; }
+    reconnectCountRef.current = 0;
 
     // 清理旧的 WebSocket 连接（先清空回调再 close，防止触发重连竞态）
     if (ws.current) {
@@ -500,7 +509,9 @@ export function useVADAssistant(cb: VADCallbacks, config: VADConfig = {}) {
       ws.current = new WebSocket(wsUrl);
 
       ws.current.onopen = () => {
+        logger.log('[VAD] 重连WS连接成功');
         setIsConnected(true);
+        reconnectCountRef.current = 0;
         if (ws.current?.readyState === WebSocket.OPEN) {
           ws.current.send(JSON.stringify({ type: 'start' }));
         }
@@ -519,7 +530,6 @@ export function useVADAssistant(cb: VADCallbacks, config: VADConfig = {}) {
             vadRaf.current = requestAnimationFrame(vadLoop);
             logger.log('[VAD] 重连后VAD循环已启动');
           } else if (d.type === 'final') {
-            // ← 修复：处理空识别结果，避免连续模式卡死
             const t = (d.text || '').trim();
             if (t) {
               logger.log('[VAD] 识别结果:', t);
@@ -534,19 +544,39 @@ export function useVADAssistant(cb: VADCallbacks, config: VADConfig = {}) {
             }
           } else if (d.type === 'interim' && d.text) {
             onTranscript.current?.(d.text);
+          } else if (d.type === 'error') {
+            logger.error('[VAD] 重连STT错误:', d.message || d.error || '未知');
+            onError.current?.(d.message || d.error || 'STT识别失败');
+            if (continuousMode.current && !stoppingRef.current) {
+              logger.log('[VAD] 连续模式：STT错误，重新开始监听');
+              setTimeout(() => restartListeningRef.current(), 1000);
+            }
           }
         } catch { /* ignore */ }
       };
 
-      ws.current.onclose = () => {
+      ws.current.onclose = (ev) => {
+        logger.log('[VAD] 重连WS关闭 code:', ev.code, 'reason:', ev.reason, 'wasClean:', ev.wasClean);
         setIsConnected(false);
         startingRef.current = false;
         setIsListening(false);
         setIsProcessing(false);
         ws.current = null;
-        logger.log('[VAD] WebSocket关闭');
+
+        if (!ev.wasClean && reconnectCountRef.current < 3 && continuousMode.current && !stoppingRef.current) {
+          reconnectCountRef.current++;
+          const delay = Math.min(1000 * Math.pow(2, reconnectCountRef.current - 1), 5000);
+          logger.log('[VAD] 连续模式重连：将在', delay, 'ms后重连 (第', reconnectCountRef.current, '次)');
+          reconnectTimerRef.current = setTimeout(() => {
+            if (continuousMode.current && !stoppingRef.current) {
+              logger.log('[VAD] 连续模式重连...');
+              restartListeningRef.current();
+            }
+          }, delay);
+        }
       };
       ws.current.onerror = () => {
+        logger.error('[VAD] 重连WS错误');
         setError('WebSocket连接失败');
         startingRef.current = false;
         setIsListening(false);

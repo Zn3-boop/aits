@@ -3,6 +3,7 @@ export interface AppSettings {
   voiceInput: boolean;       // 语音输入开关，默认 true
   voiceOutput: boolean;      // 语音输出开关，默认 true
   defaultVoice: string;      // 全局默认声线，默认 'zh-CN-XiaoxiaoNeural'
+  autoVAD: boolean;          // 自动VAD监听，默认 true（进入聊天页自动开始VAD）
   // 动画
   live2dAnimation: boolean;  // Live2D 总开关，默认 true
   breathingAnimation: boolean; // 呼吸动画，默认 true
@@ -15,6 +16,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
   voiceInput: true,
   voiceOutput: true,
   defaultVoice: 'zh-CN-XiaoxiaoNeural',
+  autoVAD: true,
   live2dAnimation: true,
   breathingAnimation: true,
   autoBlink: true,

@@ -810,7 +810,7 @@ export async function chatRoutes(fastify: FastifyInstance) {
 
   // POST /api/chats — 创建新对话
   fastify.post('/api/chats', { preHandler: requireAuth }, async (request, reply) => {
-    const userId = request.user!.userId;
+    const _userId = request.user!.userId;
     const parsed = z.object({
       personaId: z.string().min(1),
       title: z.string().optional(),

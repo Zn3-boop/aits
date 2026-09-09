@@ -198,7 +198,7 @@ export async function modelRoutes(fastify: FastifyInstance) {
       // 在Windows上，renameSync可能会因权限问题失败，所以先尝试复制然后删除
       try {
         renameSync(extractDir, finalDir);
-      } catch (renameError) {
+      } catch (_renameError) {
         // 如果rename失败，则使用复制方式
         copyDirRecursive(extractDir, finalDir);
         rmSync(extractDir, { recursive: true, force: true });

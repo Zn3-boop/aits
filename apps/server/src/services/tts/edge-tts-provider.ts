@@ -27,7 +27,7 @@ export class EdgeTtsProvider implements TtsProvider {
       };
     } catch (error) {
       logger.error('Edge TTS synthesis error:', String(error));
-      throw new Error('Edge TTS 合成失败');
+      throw new Error('Edge TTS 合成失败', { cause: error });
     }
   }
 

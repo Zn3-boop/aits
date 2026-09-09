@@ -9,7 +9,7 @@
  */
 
 import { prisma } from '../db.js';
-import { Prisma } from '@prisma/client';
+
 import type { UserEmotion, AIEmotion } from '../types/emotion.js';
 
 export type { UserEmotion, AIEmotion };
@@ -342,7 +342,7 @@ export class Validator {
   /**
    * 检查回复是否偏离人设
    */
-  private static isDeviatedFromPersona(reply: string, systemPrompt: string): boolean {
+  private static isDeviatedFromPersona(reply: string, _systemPrompt: string): boolean {
     // 简单的偏离检测：如果回复中提到自己是AI、助手等
     const aiIndicators = ['我是AI', '我是助手', '作为一个语言模型', '我的训练数据'];
     return aiIndicators.some(indicator => reply.includes(indicator));
@@ -507,27 +507,31 @@ export class SkillsSystem {
         let result: SkillResult;
 
         switch (skillName) {
-          case 'MemoryRetriever':
+          case 'MemoryRetriever': {
             const memories = await MemoryRetriever.retrieve(context);
             result = { skill: 'MemoryRetriever', success: true, output: memories };
             break;
+          }
 
-          case 'EmotionAdapter':
+          case 'EmotionAdapter': {
             const emotionOutput = context.aiEmotion
               ? EmotionAdapter.adaptAIEmotion(context.aiEmotion as AIEmotion)
               : EmotionAdapter.adapt((context.userEmotion as UserEmotion) || 'neutral');
             result = { skill: 'EmotionAdapter', success: true, output: emotionOutput };
             break;
+          }
 
-          case 'Validator':
+          case 'Validator': {
             const validation = Validator.validateUserMessage(context.message);
             result = { skill: 'Validator', success: true, output: validation };
             break;
+          }
 
-          case 'Decider':
+          case 'Decider': {
             const decision = Decider.decide(context, conversationLength);
             result = { skill: 'Decider', success: true, output: decision };
             break;
+          }
 
           default:
             result = { skill: skillName, success: false, output: null, error: 'Unknown skill' };

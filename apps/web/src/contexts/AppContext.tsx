@@ -1,7 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
 import type { Settings, PersonaConfig } from '../types/index';
-import { logger } from '../utils/logger';
 import { storage } from '../utils/storage';
 
 export interface AppContextType {

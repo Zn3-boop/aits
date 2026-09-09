@@ -64,16 +64,18 @@ export async function generateModelReply(options: {
 
   try {
     let url: string;
-    let headers: Record<string, string> = { 'Content-Type': 'application/json' };
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
     let body: any;
 
     if (provider === 'ollama') {
       url = `${baseUrl}/api/chat`;
       body = { model, messages, stream: false, options: { temperature: 0.7, num_predict: 128 } };
     } else {
-      // 智能构建 URL：避免 /v1/v1/ 重复
-      const normalizedBase = baseUrl.replace(/\/v1\/?$/, '');
-      url = `${normalizedBase}/v1/chat/completions`;
+      // 智能构建 URL：支持 /v1 (OpenAI) / /v4 (智谱) 等不同版本路径
+      const normalizedBase = baseUrl.replace(/\/(v\d+\/?)$/, '');
+      const versionMatch = baseUrl.match(/\/(v\d+)\/?$/);
+      const versionPath = versionMatch ? `/${versionMatch[1]}` : '/v1';
+      url = `${normalizedBase}${versionPath}/chat/completions`;
       headers['Authorization'] = `Bearer ${apiKey || process.env.MODEL_API_KEY || ''}`;
       body = { model, messages, stream: false, temperature: 0.7 };
     }
@@ -247,10 +249,11 @@ async function* openaiCompatibleStream(baseUrl: string, model: string, messages:
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 120000);
 
-  // 智能构建 URL：避免 /v1/v1/ 或 /v1/chat/completions 重复
-  const normalizedBase = baseUrl.replace(/\/v1\/?$/, ''); // 去掉末尾的 /v1 或 /v1/
-  const apiPath = '/v1/chat/completions';
-  const fullUrl = `${normalizedBase}${apiPath}`;
+  // 智能构建 URL：支持 /v1 (OpenAI) / /v4 (智谱) 等不同版本路径
+  const normalizedBase = baseUrl.replace(/\/(v\d+\/?)$/, '');
+  const versionMatch = baseUrl.match(/\/(v\d+)\/?$/);
+  const versionPath = versionMatch ? `/${versionMatch[1]}` : '/v1';
+  const fullUrl = `${normalizedBase}${versionPath}/chat/completions`;
 
   logger.info('[ModelProvider] OpenAI-compatible streaming to', fullUrl, 'model=', model);
 

@@ -10,7 +10,7 @@ import { useEffect } from 'react';
 import { getLive2DDriver } from '../features/live2d-driver';
 import { lipSyncEnhancer } from '../live2d-enhancements/LipSyncEnhancer';
 
-let aiSpeakingRef = { value: false };
+const aiSpeakingRef = { value: false };
 
 declare global {
   interface Window {

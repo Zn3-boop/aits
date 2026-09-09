@@ -154,7 +154,7 @@ export const PersonaDetailPage = () => {
   // 流式TTS音频队列
   const audioQueueRef = useRef<HTMLAudioElement[]>([]);
   const isPlayingQueueRef = useRef(false);
-  const currentVoiceIdRef = useRef<string>('zh-CN-XiaoxiaoNeural');
+  const _currentVoiceIdRef = useRef<string>('zh-CN-XiaoxiaoNeural');
 
   useEffect(() => { localStorage.setItem('autoVoiceEnabled', String(autoVoiceEnabled)); }, [autoVoiceEnabled]);
 
@@ -599,7 +599,7 @@ export const PersonaDetailPage = () => {
     finally { setIsDeleting(false); }
   }, [id, currentPersona, setCurrentPersona, setCurrentChat, setGlobalMessages, navigate]);
 
-  const handleVoiceToggle = useCallback(() => {
+  const _handleVoiceToggle = useCallback(() => {
     if (!isSupported) { setToast({ message: '当前浏览器或页面环境不支持语音识别，请使用 HTTPS/localhost 和 Chrome/Edge。', type: 'error' }); return; }
     if (isListening) stopListening(); else startListening();
   }, [isSupported, isListening, stopListening, startListening]);

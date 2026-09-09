@@ -21,7 +21,7 @@ export interface UnifiedEmotionOutput {
   textSentiment: TextSentiment | null;
 }
 
-interface AIEmotionResponse {
+interface _AIEmotionResponse {
   emotion: string;
   confidence: number;
   reasoning: string;

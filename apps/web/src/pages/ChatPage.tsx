@@ -10,14 +10,14 @@ import { useStreamingConversation } from '../hooks/useStreamingConversation';
 import { useVADAssistant } from '../hooks/useVADAssistant';
 import { useLive2DControl } from '../hooks/useLive2DControl';
 import { getLive2DDriver } from '../features/live2d-driver';
-import { lipSyncController } from '../services/live2d/LipSyncController';
+import { lipSyncController as _lipSyncController } from '../services/live2d/LipSyncController';
 import { lipSyncEnhancer } from '../live2d-enhancements/LipSyncEnhancer';
 import { StagePreview } from './Live2DPage';
 import { EmotionDebugPanel } from '../components/EmotionDebugPanel';
 import { live2dScheduler } from '../services/multimodal/Live2DScheduler';
 import { emotionFusion } from '../services/multimodal/MultimodalEmotionFusion';
 import type { EmotionResult, EmotionType } from '../services/multimodal/MultimodalEmotionFusion';
-import { semanticEmotionAnalyzer } from '../services/multimodal/SemanticEmotionAnalyzer';
+import { semanticEmotionAnalyzer as _semanticEmotionAnalyzer } from '../services/multimodal/SemanticEmotionAnalyzer';
 import { unifiedEmotionOrchestrator } from '../services/multimodal/UnifiedEmotionOrchestrator';
 import { useVoiceEmotion } from '../hooks/useVoiceEmotion';
 import './ChatPage.css';
@@ -129,7 +129,7 @@ export const ChatPage = () => {
   useEffect(() => { cameraEnabledRef.current = cameraEnabled; }, [cameraEnabled]);
 
   // WebSocket 语音识别（实时）
-  const whisperWS = useWhisperWebSocket({
+  const _whisperWS = useWhisperWebSocket({
     onInterim: (text) => {
       setInput(prev => prev + text);
     },
@@ -142,7 +142,7 @@ export const ChatPage = () => {
   });
 
   // 流式对话（备选）
-  const streamingConversation = useStreamingConversation();
+  const _streamingConversation = useStreamingConversation();
 
   // Live2D 控制权管理
   useLive2DControl();
@@ -245,11 +245,11 @@ export const ChatPage = () => {
 
   const {
     isListening: isVoiceListening,
-    isStreaming: isVoiceStreaming,
-    volume: voiceVolume,
-    error: voiceError,
-    startListening: startVoiceListening,
-    stopListening: stopVoiceListening,
+    isStreaming: _isVoiceStreaming,
+    volume: _voiceVolume,
+    error: _voiceError,
+    startListening: _startVoiceListening,
+    stopListening: _stopVoiceListening,
   } = useWhisperStream({
     chunkInterval: 1500,
     silenceTimeout: 5000,
@@ -507,6 +507,9 @@ export const ChatPage = () => {
       }
     }
     isSynthesizingRef.current = false;
+    if (ttsQueueRef.current.length > 0) {
+      processTTSRef.current?.();
+    }
   }, [currentPersona, selectedVoice, speakNative]);
 
   // 将 processTTSQueue 存储到 ref 中以便自引用
@@ -519,11 +522,11 @@ export const ChatPage = () => {
     if (!isVoiceEnabled) return;
     const emo = emotion || currentAiEmotionRef.current;
     sentenceBufRef.current += text;
-    const sentences = sentenceBufRef.current.split(/([。！？.!?]\s*)/);
+    const sentences = sentenceBufRef.current.split(/([。！？，、；:.!?;,]\s*)/);
     sentenceBufRef.current = sentences.pop() || '';
     for (let i = 0; i < sentences.length; i += 2) {
       const s = (sentences[i] + (sentences[i + 1] || '')).trim();
-      if (s.length > 2) {
+      if (s.length > 0) {
         ttsQueueRef.current.push({ text: s, emotion: emo });
       }
     }

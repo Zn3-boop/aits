@@ -138,6 +138,9 @@ export const apiFetch = async (url: string, options: RequestInit = {}): Promise<
 
   if (response.status === 401) {
     clearAuth();
+    if (!window.location.pathname.startsWith('/login')) {
+      window.location.href = '/login';
+    }
     throw new ApiError(401, '登录已过期，请重新登录');
   }
 

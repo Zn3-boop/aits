@@ -12,7 +12,7 @@
 import { FULL_BASE_ACTIONS, type BaseActionMeta } from './live2d-actions';
 import { actionCompositor } from './ActionCompositor';
 import { SemanticEmotionAnalyzer } from '../services/multimodal/SemanticEmotionAnalyzer';
-import type { EmotionType } from '../services/multimodal/MultimodalEmotionFusion';
+import type { EmotionType as _EmotionType } from '../services/multimodal/MultimodalEmotionFusion';
 
 // ────────────────── 类型定义 ──────────────────
 

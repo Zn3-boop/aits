@@ -3,11 +3,11 @@
  * 使用系统级 espeak 命令进行语音合成（作为 Edge-TTS 的降级方案）
  */
 import { spawn } from 'child_process';
-import { writeFileSync, unlinkSync, existsSync } from 'fs';
+import { unlinkSync, existsSync } from 'fs';
 import { join } from 'path';
 import { tmpdir } from 'os';
 import { logger } from '../../utils/logger.js';
-import type { TtsSynthesisResult } from './types.js';
+import type { TtsSynthesisResult as _TtsSynthesisResult } from './types.js';
 
 export class EspeakTtsProvider {
   private voice: string;

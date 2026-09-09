@@ -102,7 +102,7 @@ const resolveUserId = async (userId: string): Promise<string> => {
   return userId;
 };
 
-const parseTags = (value: Prisma.JsonValue): string[] => {
+const _parseTags = (value: Prisma.JsonValue): string[] => {
   if (Array.isArray(value)) {
     return value.filter((item): item is string => typeof item === 'string');
   }
@@ -128,7 +128,7 @@ const tokenize = (value: string) =>
 
 const unique = <T>(items: T[]) => [...new Set(items)];
 
-const escapeLike = (value: string) => value.replace(/[\\%_]/g, (char) => `\\${char}`);
+const _escapeLike = (value: string) => value.replace(/[\\%_]/g, (char) => `\\${char}`);
 
 const flattenPayloadText = (payload: Record<string, unknown>) => JSON.stringify(payload).toLowerCase();
 
@@ -346,7 +346,7 @@ export const listScopedRecords = async (userId: string, scope: ScopeType, query?
 export const searchScopedRecords = async (userId: string, scope: ScopeType, options: MemorySearchOptions = {}) => {
   const query = options.query?.trim() ?? '';
   const tags = options.tags?.map((item) => item.toLowerCase()) ?? [];
-  const queryTerms = unique(tokenize(query));
+  const _queryTerms = unique(tokenize(query));
   const limit = Math.min(Math.max(options.limit ?? 8, 1), 20);
   const minPriority = options.minPriority ?? 0;
 

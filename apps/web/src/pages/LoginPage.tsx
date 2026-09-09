@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { logger } from '../utils/logger';
 import { useContext } from 'react';
 import { AuthContext } from '../main';
 import { API_BASE_URL, setUserRaw, setToken } from '../utils/auth';

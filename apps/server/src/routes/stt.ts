@@ -26,7 +26,7 @@ export async function sttRoutes(fastify: FastifyInstance) {
   // ========== 新增：Whisper 模型预热检测 ==========
   async function checkWhisperModelReady(): Promise<boolean> {
     try {
-      const res = await axios.post(
+      const _res = await axios.post(
         `${whisperUrl}/api/asr`,
         Buffer.from([]),
         {

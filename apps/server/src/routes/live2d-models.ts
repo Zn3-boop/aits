@@ -8,7 +8,7 @@
  */
 
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
-import { createWriteStream, existsSync, mkdirSync, readdirSync, statSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, statSync } from 'node:fs';
 import { promises as fs } from 'node:fs';
 import JSZip from 'jszip';
 import { join, resolve, basename } from 'node:path';
@@ -253,7 +253,7 @@ export async function live2dRoutes(fastify: FastifyInstance) {
 
       let validation: ValidationResult = { valid: false, warnings: [] };
       let model3Path = '';
-      let modelPath = '';
+      let _modelPath = '';
       let foundValid = false;
 
       if (extractedDirs.length === 0) {
@@ -274,7 +274,7 @@ export async function live2dRoutes(fastify: FastifyInstance) {
         } else {
           model3Path = `/live2d/models/${modelCode}/model3.json`;
         }
-        modelPath = `/live2d/models/${modelCode}/`;
+        _modelPath = `/live2d/models/${modelCode}/`;
         foundValid = true;
       } else {
         // 有子目录，查找有效的模型结构（包括嵌套在 runtime/ 下的 xxx.model3.json）
@@ -289,10 +289,10 @@ export async function live2dRoutes(fastify: FastifyInstance) {
             const found = findActualModel3Json(dirPath, modelDir);
             if (found) {
               model3Path = `/live2d/models/${modelCode}/${found.relativePath}`;
-              modelPath = `/live2d/models/${modelCode}/` + found.relativePath.replace(/\/[^/]*\.model3\.json$/, '/');
+              _modelPath = `/live2d/models/${modelCode}/` + found.relativePath.replace(/\/[^/]*\.model3\.json$/, '/');
             } else {
               model3Path = `/live2d/models/${modelCode}/${dir}/model3.json`;
-              modelPath = `/live2d/models/${modelCode}/${dir}/`;
+              _modelPath = `/live2d/models/${modelCode}/${dir}/`;
             }
             foundValid = true;
             break;
@@ -317,10 +317,10 @@ export async function live2dRoutes(fastify: FastifyInstance) {
                   const found = findActualModel3Json(subPath, modelDir);
                   if (found) {
                     model3Path = `/live2d/models/${modelCode}/${found.relativePath}`;
-                    modelPath = `/live2d/models/${modelCode}/` + found.relativePath.replace(/\/[^/]*\.model3\.json$/, '/');
+                    _modelPath = `/live2d/models/${modelCode}/` + found.relativePath.replace(/\/[^/]*\.model3\.json$/, '/');
                   } else {
                     model3Path = `/live2d/models/${modelCode}/${dir}/${subDir}/model3.json`;
-                    modelPath = `/live2d/models/${modelCode}/${dir}/${subDir}/`;
+                    _modelPath = `/live2d/models/${modelCode}/${dir}/${subDir}/`;
                   }
                   foundValid = true;
                   break;
@@ -478,7 +478,7 @@ export async function live2dRoutes(fastify: FastifyInstance) {
     }
 
     // 更新数据库中的路径
-    const updated = await prisma.live2DModel.update({
+    const _updated = await prisma.live2DModel.update({
       where: { id: model.id },
       data: { path: correctPath }
     });

@@ -70,7 +70,7 @@ export class TtsService {
   private cache: LRUCache<string, TtsSynthesisResult>;
   private tempFiles: Map<string, NodeJS.Timeout> = new Map();
 
-  constructor(providerType: string = 'espeak') {
+  constructor(_providerType: string = 'espeak') {
     this.espeakProvider = new EspeakTtsProvider();
     this.cache = new LRUCache<string, TtsSynthesisResult>(50);
   }

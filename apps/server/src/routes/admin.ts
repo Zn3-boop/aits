@@ -14,7 +14,7 @@ export async function adminRoutes(fastify: FastifyInstance) {
     try {
       const models = await getAllModels();
       return { success: true, models };
-    } catch (error) {
+    } catch (_error) {
       reply.status(500).send({ 
         success: false, 
         error: '获取模型列表失败' 
@@ -29,7 +29,7 @@ export async function adminRoutes(fastify: FastifyInstance) {
     try {
       await syncModelRegistry();
       return { success: true, message: '模型注册表同步完成' };
-    } catch (error) {
+    } catch (_error) {
       reply.status(500).send({ 
         success: false, 
         error: '同步模型注册表失败' 
@@ -72,7 +72,7 @@ export async function adminRoutes(fastify: FastifyInstance) {
       });
 
       return { success: true, users };
-    } catch (error) {
+    } catch (_error) {
       reply.status(500).send({ 
         success: false, 
         error: '获取用户列表失败' 
@@ -100,7 +100,7 @@ export async function adminRoutes(fastify: FastifyInstance) {
           models: modelCount
         }
       };
-    } catch (error) {
+    } catch (_error) {
       reply.status(500).send({ 
         success: false, 
         error: '获取统计信息失败' 

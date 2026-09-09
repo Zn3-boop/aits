@@ -1,7 +1,7 @@
 import type { TtsProvider, TtsResponse } from './types.js';
 
 export class CoquiTtsProvider implements TtsProvider {
-  async synthesize(text: string, voice: string): Promise<TtsResponse> {
+  async synthesize(_text: string, _voice: string): Promise<TtsResponse> {
     throw new Error('Coqui TTS 尚未实现，请使用 Edge TTS');
   }
 

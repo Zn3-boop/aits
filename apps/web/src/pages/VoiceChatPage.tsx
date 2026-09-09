@@ -166,7 +166,7 @@ export const VoiceChatPage = ({ personaId: propPersonaId }: { personaId?: string
     }
   );
 
-  const { isListening, isProcessing, isSpeaking: isUserSpeaking, isConnected, error: voiceError, start: startVAD, stop: stopVAD, toggle: toggleVAD } = vad;
+  const { isListening, isProcessing, isSpeaking: isUserSpeaking, isConnected, error: voiceError, start: startVAD, stop: stopVAD, toggle: _toggleVAD } = vad;
 
   const toggleRealtimeMode = useCallback(() => {
     if (isRealtimeMode) {

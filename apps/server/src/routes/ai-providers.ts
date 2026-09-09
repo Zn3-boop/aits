@@ -24,7 +24,7 @@ const encryptApiKey = (apiKey: string): string => {
   });
 };
 
-const decryptApiKey = (encrypted: string): string | null => {
+const _decryptApiKey = (encrypted: string): string | null => {
   try {
     const parsed = JSON.parse(encrypted);
     const iv = Buffer.from(parsed.iv, 'base64');
@@ -39,7 +39,7 @@ const decryptApiKey = (encrypted: string): string | null => {
   }
 };
 
-const isEncryptedApiKey = (value: string | null | undefined): boolean => {
+const _isEncryptedApiKey = (value: string | null | undefined): boolean => {
   if (!value) return false;
   try {
     const parsed = JSON.parse(value);

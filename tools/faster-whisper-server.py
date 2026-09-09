@@ -74,12 +74,10 @@ def load_model():
 
         print(f"[Faster-Whisper] 使用设备: {device}, 计算类型: {compute_type}")
 
-        # 下载并加载模型(base 模型约 140MB)
         model = WhisperModel(
-            "base",
+            "small",
             device=device,
             compute_type=compute_type,
-            download_root=os.path.join(tempfile.gettempdir(), "faster-whisper-models")
         )
 
         model_loaded = True
@@ -124,7 +122,7 @@ async def health():
         "model_loaded": model_loaded,
         "device": "cuda" if CUDA_AVAILABLE else "cpu",
         "cuda_available": CUDA_AVAILABLE,
-        "model": "base"
+        "model": "small"
     })
 
 

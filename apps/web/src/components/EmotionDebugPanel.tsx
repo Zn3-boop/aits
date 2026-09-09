@@ -24,7 +24,7 @@ export function EmotionDebugPanel({ onTriggerEmotion }: EmotionDebugPanelProps) 
   // 监听情绪变化事件
   useEffect(() => {
     const handleEmotion = (e: CustomEvent) => {
-      const { emotion, confidence, emotionScores, features } = e.detail;
+      const { emotion, confidence } = e.detail;
       setCurrentEmotion(emotion);
       setCurrentConfidence(confidence);
       

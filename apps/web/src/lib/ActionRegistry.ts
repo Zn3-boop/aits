@@ -12,7 +12,7 @@ import {
   type BaseActionMeta,
   type CompositeActionMeta,
   type ActionCategory,
-  type EmotionTag,
+  type EmotionTag as _EmotionTag,
 } from './live2d-actions';
 
 class ActionRegistry {

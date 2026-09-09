@@ -1,5 +1,5 @@
 import type { FastifyReply, FastifyRequest } from 'fastify';
-import { z, type ZodSchema } from 'zod';
+import { type ZodSchema } from 'zod';
 
 /**
  * 创建请求体校验中间件

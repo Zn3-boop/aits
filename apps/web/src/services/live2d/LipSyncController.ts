@@ -448,7 +448,7 @@ export class LipSyncEnhancer {
    * @deprecated 使用 init({ onMouthUpdate }) 代替
    */
   setOnMouthUpdate(callback: (value: number) => void): void {
-    this.options.onMouthUpdate = (openY, form, shape) => {
+    this.options.onMouthUpdate = (openY, _form, _shape) => {
       callback(openY);
     };
     logger.log('[LipSyncEnhancer] setOnMouthUpdate 已设置');

@@ -40,8 +40,8 @@ const createPersonaSchema = z.object({
   skills: z.array(z.string()).optional(),
   voiceId: z.string().optional(),
   live2dModelId: z.string().optional(),
-  profileJson: z.record(z.unknown()).optional(),
-  styleJson: z.record(z.unknown()).optional(),
+  profileJson: z.record(z.string(), z.unknown()).optional(),
+  styleJson: z.record(z.string(), z.unknown()).optional(),
 });
 
 const updatePersonaSchema = createPersonaSchema.partial().extend({
@@ -131,13 +131,13 @@ export async function personaRoutes(fastify: FastifyInstance) {
         skillsJson: data.skills || DEFAULT_SKILLS,
         voiceId: data.voiceId || 'zh-CN-XiaoxiaoNeural',
         live2dModelId: data.live2dModelId || 'kei_basic_free',
-        profileJson: data.profileJson ?? {
+        profileJson: (data.profileJson ?? {
           avatar: data.avatar ?? null,
           intro: data.intro ?? null,
-        },
-        styleJson: data.styleJson ?? {
+        }) as any,
+        styleJson: (data.styleJson ?? {
           accent: data.accent ?? null,
-        },
+        }) as any,
       },
     });
 

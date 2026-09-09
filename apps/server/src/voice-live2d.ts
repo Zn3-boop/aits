@@ -17,7 +17,7 @@ import type {
 const execAsync = promisify(execFile);
 
 const userDataRoot = path.resolve(process.cwd(), '../../data/users');
-const voiceBaseUrl = 'edge-tts'; // 使用 Edge TTS
+const _voiceBaseUrl = 'edge-tts'; // 使用 Edge TTS
 const pythonPath = process.env.PYTHON_PATH || 'python';
 const live2dModelRoot = process.env.LIVE2D_MODEL_ROOT ?? '/models/cubism/haru';
 
@@ -182,6 +182,6 @@ export const synthesizeSpeech = async (
     };
   } catch (error) {
     logger.error('[EdgeTTS] Synthesis failed:', String(error));
-    throw new Error(`语音合成失败: ${error instanceof Error ? error.message : '未知错误'}`);
+    throw new Error(`语音合成失败: ${error instanceof Error ? error.message : '未知错误'}`, { cause: error });
   }
 };

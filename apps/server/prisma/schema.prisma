@@ -107,7 +107,7 @@ model PersonaMemory {
   personaId    String
   userId       String
   content      String
-  fingerprint  String
+  fingerprint  String   @default("")
   category     String   @default("general")
   importance   Int      @default(5)
   accessCount  Int      @default(0)
