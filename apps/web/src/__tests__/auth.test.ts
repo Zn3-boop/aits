@@ -111,7 +111,7 @@ describe('Token 管理', () => {
   });
 });
 
-describe('HttpOnly Cookie 迁移场景（面试重点）', () => {
+describe('HttpOnly Cookie 迁移场景', () => {
   const TOKEN_KEY = 'token';
   const USER_KEY = 'user';
 
