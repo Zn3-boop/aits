@@ -6,12 +6,15 @@
       "outputs": ["dist/**", "build/**", "!.git/**", "!node_modules/**"],
       "inputs": ["src/**", "tsconfig.json"]
     },
+    "typecheck": {
+      "dependsOn": ["^build"]
+    },
     "dev": {
       "cache": false,
       "persistent": true
     },
     "lint": {
-      "dependsOn": ["^lint"],
+      "dependsOn": ["^build"],
       "outputs": []
     },
     "format": {

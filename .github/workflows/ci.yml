@@ -28,6 +28,7 @@ jobs:
           cache: 'pnpm'
       
       - run: pnpm install --frozen-lockfile
+      - run: pnpm turbo run build --filter=@lpm/web...
       - run: pnpm --filter @lpm/web lint
 
   web-test:
@@ -46,6 +47,7 @@ jobs:
           cache: 'pnpm'
       
       - run: pnpm install --frozen-lockfile
+      - run: pnpm turbo run build --filter=@lpm/web...
       - run: pnpm --filter @lpm/web test
 
   web-build:
@@ -65,7 +67,7 @@ jobs:
           cache: 'pnpm'
       
       - run: pnpm install --frozen-lockfile
-      - run: pnpm --filter @lpm/web build
+      - run: pnpm turbo run build --filter=@lpm/web...
       - uses: actions/upload-artifact@v4
         with:
           name: web-dist
@@ -87,7 +89,8 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'pnpm'
       
-      - run: pnpm install --frozen-lockfile
+      - run: pnpm install --frozen-lockfile\
+      - run: pnpm turbo run build --filter=@lpm/server...
       - run: pnpm --filter @lpm/server lint
 
   server-test:
@@ -106,6 +109,7 @@ jobs:
           cache: 'pnpm'
       
       - run: pnpm install --frozen-lockfile
+      - run: pnpm turbo run build --filter=@lpm/server...
       - run: pnpm --filter @lpm/server test
 
   server-build:
@@ -125,7 +129,7 @@ jobs:
           cache: 'pnpm'
       
       - run: pnpm install --frozen-lockfile
-      - run: pnpm --filter @lpm/server build
+      - run: pnpm turbo run build --filter=@lpm/server...
       - uses: actions/upload-artifact@v4
         with:
           name: server-dist
