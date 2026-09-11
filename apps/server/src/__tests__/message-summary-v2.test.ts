@@ -3,7 +3,7 @@ import { estimateTokens } from '../utils/token-counter.js';
 import type { ChatMessage } from '../services/message-summary.js';
 
 vi.mock('../model-provider.js', () => ({
-  generateModelReply: vi.fn(async ({ messages, fallbackReply }: any) => {
+  generateModelReply: vi.fn(async ({ messages, fallbackReply: _fallbackReply }: any) => {
     const userMsg = messages.find((m: any) => m.role === 'user');
     const text = userMsg?.content || '';
     const lineCount = text.split('\n').filter((l: string) => l.trim()).length;

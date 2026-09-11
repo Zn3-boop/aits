@@ -160,8 +160,7 @@ export async function sttRoutes(fastify: FastifyInstance) {
 
       fastify.log.info({ msg: '[STT] Transcribing', provider, size: buffer.length });
 
-      let result: { text: string; duration: number };
-      result = await transcribeWithWhisper(buffer, data.filename || 'audio.webm', data.mimetype || 'audio/webm');
+      const result = await transcribeWithWhisper(buffer, data.filename || 'audio.webm', data.mimetype || 'audio/webm');
 
       return reply.send({
         text: result.text,
