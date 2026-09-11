@@ -44,6 +44,7 @@ export function useWhisperWebSocket(options: WhisperWSOptions = {}): UseWhisperW
   const streamRef = useRef<MediaStream | null>(null);
   const reconnectTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isManualStopRef = useRef(false);
+  const retryCountRef = useRef(0);
   const connectRef = useRef<() => void>(() => {});
 
   // 连接 WebSocket
@@ -64,6 +65,7 @@ export function useWhisperWebSocket(options: WhisperWSOptions = {}): UseWhisperW
       logger.log('[WhisperWS] 连接成功');
       setIsConnected(true);
       setError(null);
+      retryCountRef.current = 0;
     };
 
     ws.onclose = () => {
@@ -73,10 +75,12 @@ export function useWhisperWebSocket(options: WhisperWSOptions = {}): UseWhisperW
 
       // 非手动关闭时尝试重连
       if (!isManualStopRef.current && autoReconnect) {
+        const delay = Math.min(1000 * Math.pow(2, retryCountRef.current), 30000);
+        retryCountRef.current += 1;
         reconnectTimeoutRef.current = setTimeout(() => {
-          logger.log('[WhisperWS] 尝试重连...');
+          logger.log(`[WhisperWS] 尝试重连(第${retryCountRef.current}次, ${delay}ms)...`);
           connectRef.current();
-        }, 3000);
+        }, delay);
       }
     };
 
