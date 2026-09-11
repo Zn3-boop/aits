@@ -7,7 +7,7 @@ import axios from 'axios';
 import FormData from 'form-data';
 import { requireAuth } from '../auth.js';
 
-type STTProvider = 'funasr-local' | 'whisper-local' | 'paraformer-cloud' | null;
+type STTProvider = 'whisper-local' | null;
 
 export async function sttRoutes(fastify: FastifyInstance) {
   let sttAvailable = false;
@@ -16,12 +16,7 @@ export async function sttRoutes(fastify: FastifyInstance) {
   let whisperModelReady = false;
   let providerDetecting = true;
 
-  const funasrServerUrl = process.env.FUNASR_SERVER_URL;
   const whisperUrl = process.env.WHISPER_URL || 'http://localhost:10095';
-  const apiUrl = process.env.PARAFORMER_API_URL;
-  const appKey = process.env.PARAFORMER_APP_KEY;
-  const accessKeyId = process.env.PARAFORMER_ACCESS_KEY_ID;
-  const accessKeySecret = process.env.PARAFORMER_ACCESS_KEY_SECRET;
 
   // ========== 新增：Whisper 模型预热检测 ==========
   async function checkWhisperModelReady(): Promise<boolean> {
@@ -63,14 +58,9 @@ export async function sttRoutes(fastify: FastifyInstance) {
     fastify.log.warn('[STT] ⚠ Whisper 模型预热超时，继续运行');
   }
 
-  // ========== 修复：检测逻辑，优先匹配 Faster-Whisper 的实际端点 ==========
   async function detectProvider(): Promise<void> {
-    // 1. 检测 Faster-Whisper（你的 Python 服务）
     try {
-      // Faster-Whisper 用 FastAPI，健康检查是 /api/health
-      const res = await axios.get(`${whisperUrl}/api/health`, {
-        timeout: 3000,
-      });
+      const res = await axios.get(`${whisperUrl}/api/health`, { timeout: 3000 });
       if (res.status === 200) {
         provider = 'whisper-local';
         sttAvailable = true;
@@ -79,7 +69,6 @@ export async function sttRoutes(fastify: FastifyInstance) {
       }
     } catch (err: any) {
       fastify.log.warn(`[STT] Whisper /api/health failed: ${err.message}`);
-      // 再试 /docs（Swagger UI），确认服务是否活着
       try {
         const docsRes = await axios.get(`${whisperUrl}/docs`, { timeout: 2000 });
         if (docsRes.status === 200) {
@@ -93,32 +82,8 @@ export async function sttRoutes(fastify: FastifyInstance) {
       }
     }
 
-    // 2. 检测 FunASR
-    if (funasrServerUrl) {
-      try {
-        await axios.get(`${funasrServerUrl}/api/health`, { timeout: 3000 });
-        provider = 'funasr-local';
-        sttAvailable = true;
-        fastify.log.info(`[STT] ✓ FunASR ready at ${funasrServerUrl}`);
-        return;
-      } catch {
-        fastify.log.warn(`[STT] FunASR at ${funasrServerUrl} not responding`);
-      }
-    }
-
-    // 3. 阿里云
-    if (apiUrl && appKey && accessKeyId && accessKeySecret) {
-      provider = 'paraformer-cloud';
-      sttAvailable = true;
-      fastify.log.info('[STT] ✓ Paraformer cloud configured');
-      return;
-    }
-
     loadError =
-      'STT 未配置。请启动以下服务之一：\n' +
-      `1. Faster-Whisper: python tools/faster-whisper-server.py (默认 ${whisperUrl})\n` +
-      `2. FunASR: 设置 FUNASR_SERVER_URL\n` +
-      `3. 阿里云: 设置 PARAFORMER_API_URL 等`;
+      'STT 未配置。请启动 Faster-Whisper: python tools/faster-whisper-server.py (默认 ' + whisperUrl + ')';
     fastify.log.warn('[STT] ⚠ ' + loadError);
   }
 
@@ -168,57 +133,7 @@ export async function sttRoutes(fastify: FastifyInstance) {
     return { text, duration: 0 };
   }
 
-  // FunASR（保留）
-  async function transcribeWithFunASR(
-    audioBuffer: Buffer,
-    filename: string,
-    mimetype: string
-  ): Promise<{ text: string; duration: number }> {
-    const form = new FormData();
-    form.append('file', audioBuffer, { filename, contentType: mimetype });
-    const response = await axios.post(`${funasrServerUrl}/api/asr`, form, {
-      headers: form.getHeaders(),
-      timeout: 60000,
-      maxBodyLength: Infinity,
-      maxContentLength: Infinity,
-    });
-    const result = response.data;
-    let text = '';
-    let duration = 0;
-    if (Array.isArray(result)) {
-      text = result.filter((i: any) => i.text).map((i: any) => i.text).join('');
-      duration = result.reduce((m: number, i: any) => Math.max(m, i.duration || 0), 0);
-    } else if (typeof result === 'object') {
-      text = result.text || result.result?.text || '';
-      duration = result.duration || result.result?.duration || 0;
-    }
-    return { text, duration };
-  }
 
-  // Paraformer（保留）
-  async function transcribeWithParaformerCloud(
-    audioBuffer: Buffer,
-    filename: string,
-    mimetype: string
-  ): Promise<{ text: string; duration: number }> {
-    const form = new FormData();
-    form.append('audio', audioBuffer, { filename, contentType: mimetype });
-    form.append('appkey', appKey!);
-    form.append('format', 'webm');
-    form.append('sample_rate', '16000');
-
-    const token = Buffer.from(`${accessKeyId}:${accessKeySecret}`).toString('base64');
-    const response = await axios.post(apiUrl!, form, {
-      headers: { ...form.getHeaders(), Authorization: `Basic ${token}` },
-      timeout: 30000,
-      maxBodyLength: Infinity,
-      maxContentLength: Infinity,
-    });
-
-    const result = response.data;
-    if (result.code) throw new Error(result.message || 'Paraformer error');
-    return { text: result.result?.text || '', duration: result.result?.duration || 0 };
-  }
 
   // ========== 识别接口 ==========
   fastify.post('/api/stt/transcribe', { preHandler: requireAuth }, async (request, reply) => {
@@ -246,14 +161,7 @@ export async function sttRoutes(fastify: FastifyInstance) {
       fastify.log.info({ msg: '[STT] Transcribing', provider, size: buffer.length });
 
       let result: { text: string; duration: number };
-
-      if (provider === 'whisper-local') {
-        result = await transcribeWithWhisper(buffer, data.filename || 'audio.webm', data.mimetype || 'audio/webm');
-      } else if (provider === 'funasr-local') {
-        result = await transcribeWithFunASR(buffer, data.filename || 'audio.webm', data.mimetype || 'audio/webm');
-      } else {
-        result = await transcribeWithParaformerCloud(buffer, data.filename || 'audio.webm', data.mimetype || 'audio/webm');
-      }
+      result = await transcribeWithWhisper(buffer, data.filename || 'audio.webm', data.mimetype || 'audio/webm');
 
       return reply.send({
         text: result.text,
@@ -279,7 +187,6 @@ export async function sttRoutes(fastify: FastifyInstance) {
     }
   });
 
-  // ========== 修复：健康检查 ==========
   fastify.get('/api/stt/health', async (_request, reply) => {
     if (providerDetecting) {
       return reply.send({
@@ -299,39 +206,22 @@ export async function sttRoutes(fastify: FastifyInstance) {
       });
     }
 
-    if (provider === 'whisper-local') {
-      try {
-        await axios.get(`${whisperUrl}/api/health`, { timeout: 3000 });
-        return reply.send({ 
-          status: 'ok', 
-          provider: 'whisper-local', 
-          message: 'Whisper 正常',
-          modelLoaded: whisperModelReady,
-        });
-      } catch {
-        return reply.status(503).send({
-          status: 'degraded',
-          provider: 'whisper-local',
-          message: `Whisper ${whisperUrl} 未响应`,
-          fix: '重新启动 faster-whisper-server.py',
-          modelLoaded: false,
-        });
-      }
+    try {
+      await axios.get(`${whisperUrl}/api/health`, { timeout: 3000 });
+      return reply.send({
+        status: 'ok',
+        provider: 'whisper-local',
+        message: 'Whisper 正常',
+        modelLoaded: whisperModelReady,
+      });
+    } catch {
+      return reply.status(503).send({
+        status: 'degraded',
+        provider: 'whisper-local',
+        message: `Whisper ${whisperUrl} 未响应`,
+        fix: '重新启动 faster-whisper-server.py',
+        modelLoaded: false,
+      });
     }
-
-    if (provider === 'funasr-local') {
-      try {
-        await axios.get(`${funasrServerUrl}/api/health`, { timeout: 3000 });
-        return reply.send({ status: 'ok', provider: 'funasr-local', message: 'FunASR 正常' });
-      } catch {
-        return reply.status(503).send({
-          status: 'degraded',
-          provider: 'funasr-local',
-          message: 'FunASR 未响应',
-        });
-      }
-    }
-
-    return reply.send({ status: 'ok', provider: 'paraformer-cloud', message: '阿里云配置正常' });
   });
 }

@@ -12,7 +12,7 @@ import { requireAuth } from '../auth.js';
 import { generateModelReplyStream } from '../model-provider.js';
 import { composeCompanionMessages } from '@lpm/llm-core';
 import { extractAndStoreMemory } from '../services/memory-extractor.js';
-import { compressConversationContext } from '../services/message-summary.js';
+import { compressConversationContextV2 } from '../services/message-summary.js';
 import { logger } from '../utils/logger.js';
 
 const execAsync = promisify(execFile);
@@ -232,36 +232,42 @@ export async function chatRoutes(fastify: FastifyInstance) {
         ? aiModel
         : (fallbackProvider?.model || fastify.config.MODEL_NAME);
 
-      // 尝试读取已保存的摘要（减少重复生成）
       const savedSummary = await prisma.conversationSummary.findUnique({
         where: { sessionId: effectiveSessionId }
       }).catch(() => null);
 
-      // 如果已有摘要且消息数没变化太多，直接复用
-      const historyForCompress = savedSummary && allHistory.length <= savedSummary.messageCount + 3
-        ? allHistory.slice(-(allHistory.length - savedSummary.messageCount))
-        : allHistory;
+      const { processedMessages: compressed, wasCompressed, nearSummary, farSummary, farCount, messageCount } =
+        await compressConversationContextV2(
+          allHistory.map(h => ({ id: h.id, role: h.role, content: h.content, createdAt: h.createdAt })),
+          effectiveBaseUrl,
+          effectiveModel,
+          effectiveProvider,
+          effectiveApiKey,
+          {
+            maxTokens: 2500,
+            preserveRecent: 8,
+            farSummary: savedSummary?.farContent || undefined,
+            farCount: savedSummary?.farCount || 0,
+          }
+        );
 
-      const { processedMessages: compressed, wasCompressed, summaryText } = await compressConversationContext(
-        historyForCompress.map(h => ({ id: h.id, role: h.role, content: h.content, createdAt: h.createdAt })),
-        effectiveBaseUrl,
-        effectiveModel,
-        effectiveProvider,
-        effectiveApiKey,
-        2500,
-        8
-      );
-
-      // 持久化摘要（异步，不阻塞回复）
-      if (wasCompressed && summaryText) {
+      if (wasCompressed) {
         prisma.conversationSummary.upsert({
           where: { sessionId: effectiveSessionId },
-          create: { sessionId: effectiveSessionId, personaId: effectivePersonaId, userId, content: summaryText, messageCount: allHistory.length },
-          update: { content: summaryText, messageCount: allHistory.length, updatedAt: new Date() }
+          create: {
+            sessionId: effectiveSessionId, personaId: effectivePersonaId, userId,
+            nearContent: nearSummary || '', farContent: farSummary || '',
+            farCount, messageCount,
+          },
+          update: {
+            nearContent: nearSummary || '', farContent: farSummary || '',
+            farCount, messageCount, updatedAt: new Date(),
+          },
         }).catch(err => logger.warn('[Summary] 保存失败:', err));
       }
 
-      const summaryMsg = compressed.find(m => m.role === 'system');
+      const farMsg = compressed.find(m => m.role === 'system' && m.content.startsWith('[远期对话摘要]'));
+      const nearMsg = compressed.find(m => m.role === 'system' && m.content.startsWith('[近期对话摘要]'));
       const recentMsgs = compressed.filter(m => m.role !== 'system');
 
       // 4. 获取全局记忆、角色专属记忆与当前好感度
@@ -300,8 +306,11 @@ export async function chatRoutes(fastify: FastifyInstance) {
         personaPrompt
       );
 
-      if (summaryMsg) {
-        enhancedSystemPrompt += `\n\n${summaryMsg.content}\n（以上为之前对话的压缩摘要，请基于这些信息保持上下文连贯，不要向用户提及"摘要"二字。）`;
+      if (farMsg) {
+        enhancedSystemPrompt += `\n\n${farMsg.content}\n（以上为更早对话的远期摘要，保持连贯即可，无需向用户提及。）`;
+      }
+      if (nearMsg) {
+        enhancedSystemPrompt += `\n\n${nearMsg.content}\n（以上为近期对话摘要，请基于此保持上下文连贯，不要向用户提及"摘要"二字。）`;
       }
 
       // 获取情绪适配信息（用于语音）
