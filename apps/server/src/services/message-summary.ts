@@ -60,6 +60,8 @@ export interface CompressionResult {
   summaryText?: string;
 }
 
+const TAIL_TOKEN_LIMIT = 1200;
+
 export async function compressConversationContext(
   messages: ChatMessage[],
   baseUrl: string,
@@ -84,8 +86,18 @@ export async function compressConversationContext(
 
   logger.info(`[Compress] 触发压缩: ${messages.length}条(含${systemMessages.length}条system), ~${Math.round(totalTokens)}tokens`);
 
-  const recent = chatMessages.slice(-preserveRecent);
-  const older = chatMessages.slice(0, -preserveRecent);
+  let tailIndex = chatMessages.length;
+  let tailTokenSum = 0;
+  while (tailIndex > 0 && tailTokenSum < TAIL_TOKEN_LIMIT) {
+    tailIndex -= 1;
+    tailTokenSum += estimateMessageTokens(chatMessages[tailIndex]);
+  }
+  if (tailIndex < chatMessages.length - preserveRecent) {
+    tailIndex = chatMessages.length - preserveRecent;
+  }
+
+  const recent = chatMessages.slice(tailIndex);
+  const older = chatMessages.slice(0, tailIndex);
 
   const summary = await generateConversationSummary(older, baseUrl, model, provider, apiKey);
 
